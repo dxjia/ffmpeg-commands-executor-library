@@ -46,7 +46,7 @@ LOCAL_SRC_FILES := FFmpegNativeHelper.c \
                    ffmpeg_opt.c \
                    ffmpeg_filter.c
 
-LOCAL_LDLIBS := -L$(SYSROOT)/usr/lib -llog -lz -landroid 
+LOCAL_LDLIBS := -L$(SYSROOT)/usr/lib -llog -lz
 
 LOCAL_SHARED_LIBRARIES:= avcodec-prebuilt \
                          avdevice-prebuilt \
