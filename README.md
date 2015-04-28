@@ -3,7 +3,7 @@
 
 # 介绍
 项目使用eclipse创建<br>
-jni/prebuilt以及jni/include下的so和.h文件都是从项目[ffmpeg-for-android-shared-library](https://github.com/dxjia/ffmpeg-for-android-shared-library)得来的<br>
+jni/prebuilt以及jni/include下的so和.h文件都是从我的另外一个项目[ffmpeg-for-android-shared-library](https://github.com/dxjia/ffmpeg-for-android-shared-library)得来的<br>
 ###Step 1
 使用ndk将jni进行编译<br>
 ```
