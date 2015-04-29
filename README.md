@@ -16,7 +16,7 @@ eclipse import project
 ###Step 3
 build project
 
-#使用
+#代码示例
 ##Java示例
 ```java
 public class FFmpegNativeHelper {
@@ -51,7 +51,8 @@ public class FFmpegNativeHelper {
 	public native int ffmpeg_entry(int argc, String[] args);
 }
 ```
-##调用
+##使用
+传入有效路径，如：/sdcard/abc.mp4<br>
 ```java
 // 将/sdcard/abc.mp4从开始的30帧转换为gif图片
 String testCommand = "ffmpeg -i /sdcard/abc.mp4 -vframes 30 -y -f gif /sdcard/outabc.gif";
