@@ -11,6 +11,8 @@
 # generated files
 bin/
 gen/
+obj/
+libs/armeabi/
 
 # Local configuration file (sdk path, etc)
 local.properties
