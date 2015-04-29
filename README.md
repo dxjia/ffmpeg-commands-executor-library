@@ -64,3 +64,5 @@ public class FFmpegNativeHelper {
 String testCommand = "ffmpeg -i /sdcard/abc.mp4 -vframes 30 -y -f gif /sdcard/outabc.gif";
 new FFmpegNativeHelper().ffmpegRunCommand(testCommand);
 ```
+#TODO
+<font size="4">x86设备上还待验证</font>
