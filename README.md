@@ -16,6 +16,11 @@ ndk-build
 ```
 ndk-build APP_ABI=x86
 ```
+这里有一个问题：这样执行之后会将第一次ndk-build出来的armeabi下的so库清空掉，也许是makefile文件写的不够好，后来再研究一下修复<br>
+请手动执行，将obj/local/armeabi下的所有so复制到libs/armeabi目录下：<br>
+```
+cp obj/local/armeabi/*.so libs/armeabi/
+```
 ###Step 2
 eclipse import project
 
