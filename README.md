@@ -2,7 +2,7 @@
 使用jni调用ffmpeg，首先将so库编入apk，jni的实现上使用直接传递ffmpeg command的方式，这样只需要安排合适的ffmpeg命令即可完成工作，不用再去研究ffmpeg的函数调用。
 
 # 介绍
-项目使用eclipse创建。<br>
+项目使用`eclipse`创建。<br>
 jni/prebuilt以及jni/include下的so和.h文件都是从我的另外一个项目[ffmpeg-for-android-shared-library](https://github.com/dxjia/ffmpeg-for-android-shared-library)得来的。<br>
 ###Step 1
 使用ndk将jni进行编译。<br>
@@ -29,6 +29,7 @@ build project
 
 #代码示例
 ##Java示例
+
 ```java
 public class FFmpegNativeHelper {
 	public FFmpegNativeHelper() {
