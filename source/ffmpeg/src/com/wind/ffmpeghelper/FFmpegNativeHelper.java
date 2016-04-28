@@ -31,5 +31,7 @@ public class FFmpegNativeHelper {
 	}
 
 	// argc maybe dont be needed
+	public native int ffmpeg_init();
+	public native int ffmpeg_uninit();
 	public native int ffmpeg_entry(int argc, String[] args);
 }

@@ -7,6 +7,23 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/*
+ * Class:     com_wind_ffmpeghelper_FfmpegNativeHelper
+ * Method:    ffmpeg_init
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_wind_ffmpeghelper_FFmpegNativeHelper_ffmpeg_1init
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_wind_ffmpeghelper_FfmpegNativeHelper
+ * Method:    ffmpeg_uninit
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_wind_ffmpeghelper_FFmpegNativeHelper_ffmpeg_1uninit
+  (JNIEnv *, jobject);
+
 /*
  * Class:     com_wind_ffmpeghelper_FfmpegNativeHelper
  * Method:    ffmpeg_entry

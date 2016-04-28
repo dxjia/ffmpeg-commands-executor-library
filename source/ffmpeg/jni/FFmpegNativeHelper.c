@@ -2,9 +2,6 @@
 
 /* porting this from ffmpeg.c */
 
-#define LOG_TAG "ffmpeg-jni"
-#include <android/log.h>
-
 /*
  * Copyright (c) 2000-2003 Fabrice Bellard
  *
@@ -110,6 +107,9 @@
 #include "cmdutils.h"
 
 #include "libavutil/avassert.h"
+#include "libavutil/log.h"
+
+#include "android_log.h"
 
 const char program_name[] = "ffmpeg";
 const int program_birth_year = 2000;
@@ -164,10 +164,6 @@ static int restore_tty;
 #if HAVE_PTHREADS
 static void free_input_threads(void);
 #endif
-
-#define logd(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
-#define loge(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
-
 
 /* sub2video hack:
    Convert subtitles to video with alpha to insert them in filter graphs.
@@ -317,8 +313,10 @@ static void term_exit_sigsafe(void)
 
 void term_exit(void)
 {
+#if 0
     av_log(NULL, AV_LOG_QUIET, "%s", "");
     term_exit_sigsafe();
+#endif
 }
 
 static volatile int received_sigterm = 0;
@@ -338,6 +336,7 @@ sigterm_handler(int sig)
 
 void term_init(void)
 {
+#if 0
 #if HAVE_TERMIOS_H
     if(!run_as_daemon){
         struct termios tty;
@@ -369,6 +368,7 @@ void term_init(void)
     signal(SIGTERM, sigterm_handler); /* Termination (ANSI).  */
 #ifdef SIGXCPU
     signal(SIGXCPU, sigterm_handler);
+#endif
 #endif
 }
 
@@ -441,7 +441,7 @@ static void ffmpeg_cleanup(int ret)
 
     if (do_benchmark) {
         int maxrss = getmaxrss() / 1024;
-        printf("bench: maxrss=%ikB\n", maxrss);
+        logv("bench: maxrss=%ikB\n", maxrss);
     }
 
     for (i = 0; i < nb_filtergraphs; i++) {
@@ -581,7 +581,7 @@ static void update_benchmark(const char *fmt, ...)
             va_start(va, fmt);
             vsnprintf(buf, sizeof(buf), fmt, va);
             va_end(va);
-            printf("bench: %8"PRIu64" %s \n", t - current_time, buf);
+            logv("bench: %8"PRIu64" %s \n", t - current_time, buf);
         }
         current_time = t;
     }
@@ -2343,7 +2343,7 @@ static void print_sdp(void)
     av_sdp_create(avc, j, sdp, sizeof(sdp));
 
     if (!sdp_filename) {
-        printf("SDP:\n%s\n", sdp);
+        logv("SDP:\n%s\n", sdp);
         fflush(stdout);
     } else {
         if (avio_open2(&sdp_pb, sdp_filename, AVIO_FLAG_WRITE, &int_cb, NULL) < 0) {
@@ -4022,36 +4022,82 @@ static void log_callback_null(void *ptr, int level, const char *fmt, va_list vl)
 {
 }
 
-int ffmpeg_main_entry(int argc, char **argv)
+
+#define LINE_SZ 1024
+void log_anyway(void *ptr, int level, const char *fmt, va_list vl)
+{
+    static int print_prefix = 1;
+    static char line[LINE_SZ];
+    unsigned tint = 0;
+
+    if (level >= 0) {
+        tint = level & 0xff00;
+        level &= 0xff;
+    }
+
+    memset(line, '\0', LINE_SZ);
+    av_log_format_line(ptr, level, fmt, vl, line, LINE_SZ, &print_prefix);
+
+    switch (level) {
+        case AV_LOG_QUIET:
+            break;
+        case AV_LOG_PANIC:
+        case AV_LOG_FATAL:
+            logf("%s", line);
+            break;
+        case AV_LOG_ERROR:
+            loge("%s", line);
+            break;
+        case AV_LOG_WARNING:
+            logw("%s", line);
+            break;
+        case AV_LOG_INFO:
+            logi("%s", line);
+            break;
+        case AV_LOG_VERBOSE:
+            logv("%s", line);
+            break;
+        case AV_LOG_DEBUG:
+        case AV_LOG_TRACE:
+            logd("%s", line);
+            break;
+    }
+}
+
+void log_callback(void *ptr, int level, const char *fmt, va_list vl)
+{
+    unsigned tint = 0;
+
+    if (level >= 0) {
+        tint = level & 0xff00;
+        level &= 0xff;
+    }
+
+    if (level > av_log_get_level())
+        return;
+
+    log_anyway(ptr, level, fmt, vl);
+}
+
+int run_ffempeg_command(int argc, char **argv)
 {
     int ret;
     int64_t ti;
 
-    register_exit(ffmpeg_cleanup);
-
-    setvbuf(stderr,NULL,_IONBF,0); /* win32 runtime needs this */
-
-    av_log_set_flags(AV_LOG_SKIP_REPEATED);
     parse_loglevel(argc, argv, options);
 
-    if(argc>1 && !strcmp(argv[1], "-d")){
-        run_as_daemon=1;
-        av_log_set_callback(log_callback_null);
+    if(argc > 1 && !strcmp(argv[1], "-d")){
         argc--;
         argv++;
+        logw("ignore -d option!");
     }
 
-    avcodec_register_all();
-#if CONFIG_AVDEVICE
-    avdevice_register_all();
-#endif
-    avfilter_register_all();
-    av_register_all();
-    avformat_network_init();
+    if (argc <= 1) {
+        loge("At least one option, please check.");
+        return 1;
+    }
 
-    show_banner(argc, argv, options);
-
-    term_init();
+    //show_banner(argc, argv, options);
 
     /* parse options and open all input/output files */
     ret = ffmpeg_parse_options(argc, argv);
@@ -4062,7 +4108,6 @@ int ffmpeg_main_entry(int argc, char **argv)
 
     if (nb_output_files <= 0 && nb_input_files == 0) {
         show_usage();
-        loge("Use -h to get full help or, even better, run 'man %s'\n", program_name);
         return 1;
     }
 
@@ -4072,14 +4117,9 @@ int ffmpeg_main_entry(int argc, char **argv)
         return 1;
     }
 
-//     if (nb_input_files == 0) {
-//         av_log(NULL, AV_LOG_FATAL, "At least one input file must be specified\n");
-//         loge("Error, %s", __FUNCTION__);
-//     }
-
     current_time = ti = getutime();
     if (transcode() < 0) {
-    	logd("failed~~");
+    	logd("failed...");
     	return 1;
     }
 
@@ -4103,29 +4143,80 @@ int ffmpeg_main_entry(int argc, char **argv)
  * Method:    ffmpeg_entry
  * Signature: ()I
  */
-// native function, java layer call this to run a ffmpeg fuction
+// native function, java layer call this to run a ffmpeg command
 JNIEXPORT jint Java_com_wind_ffmpeghelper_FFmpegNativeHelper_ffmpeg_1entry(
-		JNIEnv* env, jobject thiz, jint argCount, jobjectArray strArray)
+        JNIEnv* env, jobject thiz, jint argCount, jobjectArray strArray)
 {
     int ret, i;
-	int argc = argCount;
-	jstring jstr;
+    int argc = argCount;
+    jstring jstr;
 
-	char **argv = (char **) calloc(argc, sizeof(char *));
+    char **argv = (char **) calloc(argc, sizeof(char *));
 
-	for (i = 0; i < argc; i++) {
-		jstr = (*env)->GetObjectArrayElement(env, strArray, i);
-		argv[i] = (char *) (*env)->GetStringUTFChars(env, jstr, 0);
-	}
+    for (i = 0; i < argc; i++) {
+        jstr = (*env)->GetObjectArrayElement(env, strArray, i);
+        argv[i] = (char *) (*env)->GetStringUTFChars(env, jstr, 0);
+    }
 
-	logd("ffmpeg test");
+    // reset log callback for every commond
+    av_log_set_callback(log_callback);
 
-    ret = ffmpeg_main_entry(argc, argv);
+    ret = run_ffempeg_command(argc, argv);
 
-    logd("result = %d", ret);
     free(argv);
-    logd("free argv done");
 
     return 0;
 }
+
+static int have_inited = 0;
+
+/*
+ * Class:     com_wind_ffmpeghelper_FfmpegNativeHelper
+ * Method:    ffmpeg_uninit
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_wind_ffmpeghelper_FFmpegNativeHelper_ffmpeg_1uninit
+  (JNIEnv * env, jobject thiz)
+{
+    ffmpeg_cleanup(0);
+    have_inited = 0;
+}
+
+/*
+ * Class:     com_wind_ffmpeghelper_FfmpegNativeHelper
+ * Method:    ffmpeg_init
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_wind_ffmpeghelper_FFmpegNativeHelper_ffmpeg_1init
+  (JNIEnv * env, jobject thiz)
+{
+    int ret = 0;
+
+    if (have_inited == 1) {
+        loge("have inited, drop repeat action...");
+        return 1;
+    }
+
+    av_log_set_flags(AV_LOG_SKIP_REPEATED);
+
+    // set info level as defaul,
+    // note that ffmpeg`s log level order is oppsite to android`s
+    av_log_set_level(AV_LOG_INFO);
+
+    // set our own log function
+    av_log_set_callback(log_callback);
+
+    avcodec_register_all();
+#if CONFIG_AVDEVICE
+    avdevice_register_all();
+#endif
+    avfilter_register_all();
+    av_register_all();
+    avformat_network_init();
+
+    have_inited = 1;
+
+    return ret;
+}
+
 

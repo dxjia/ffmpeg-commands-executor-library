@@ -59,6 +59,8 @@
 #include <sys/resource.h>
 #endif
 
+#include "android_log.h"
+
 static int init_report(const char *env);
 
 struct SwsContext *sws_opts;
@@ -771,7 +773,7 @@ do {                                                                           \
         if (po->name) {
             if (po->flags & OPT_EXIT) {
                 /* optional argument, e.g. -h */
-                arg = argv[optindex++];
+                //arg = argv[optindex++];
             } else if (po->flags & HAS_ARG) {
                 GET_ARG(arg);
             } else {
@@ -971,7 +973,7 @@ static int init_report(const char *env)
                filename.str, strerror(errno));
         return ret;
     }
-    av_log_set_callback(log_callback_report);
+    //av_log_set_callback(log_callback_report);
     av_log(NULL, AV_LOG_INFO,
            "%s started on %04d-%02d-%02d at %02d:%02d:%02d\n"
            "Report written to \"%s\"\n",
@@ -1126,7 +1128,7 @@ void show_banner(int argc, char **argv, const OptionDef *options)
 
 int show_version(void *optctx, const char *opt, const char *arg)
 {
-    av_log_set_callback(log_callback_help);
+    //av_log_set_callback(log_callback_help);
     print_program_info (SHOW_COPYRIGHT, AV_LOG_INFO);
     print_all_libs_info(SHOW_VERSION, AV_LOG_INFO);
 
@@ -1135,7 +1137,7 @@ int show_version(void *optctx, const char *opt, const char *arg)
 
 int show_buildconf(void *optctx, const char *opt, const char *arg)
 {
-    av_log_set_callback(log_callback_help);
+    //av_log_set_callback(log_callback_help);
     print_buildconf      (INDENT|0, AV_LOG_INFO);
 
     return 0;
@@ -1819,7 +1821,7 @@ static void show_help_filter(const char *name)
 int show_help(void *optctx, const char *opt, const char *arg)
 {
     char *topic, *par;
-    av_log_set_callback(log_callback_help);
+    //av_log_set_callback(log_callback_help);
 
     topic = av_strdup(arg ? arg : "");
     if (!topic)

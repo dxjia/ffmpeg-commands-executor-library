@@ -18,6 +18,12 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         mTextView = (TextView) findViewById(R.id.text_view);
         mFfmpegNativeHelper = new FFmpegNativeHelper();
+        mFfmpegNativeHelper.ffmpeg_init();
+    }
+
+    protected void onDestroy() {
+        super.onDestroy();
+        mFfmpegNativeHelper.ffmpeg_uninit();
     }
 
     @Override
@@ -29,6 +35,7 @@ public class MainActivity extends Activity {
 	private static final String testCommand = "ffmpeg -i /sdcard/abc.mp4 -vframes 30 -y -f gif /sdcard/outabc.gif";
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+    	
     	// TODO: do jni testthing
     	if (mFfmpegNativeHelper.ffmpegRunCommand(testCommand) == 0) {
     	    mTextView.setText("success!");
