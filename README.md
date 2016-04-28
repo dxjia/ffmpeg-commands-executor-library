@@ -5,6 +5,7 @@
 项目使用`eclipse`创建。<br>
 jni/prebuilt以及jni/include下的so和.h文件都是从我的另外一个项目[ffmpeg-for-android-shared-library](https://github.com/dxjia/ffmpeg-for-android-shared-library)得来的。<br>
 ### Step 1
+#### Ubuntu
 使用ndk将jni进行编译。<br>
 本项目中增加了x86的ffmpeg库，但ndk-build要分别来进行。<br>
 如果只想支持arm平台的设备，只需执行：<br>
@@ -21,7 +22,7 @@ ndk-build APP_ABI=x86
 ```
 cp obj/local/armeabi/*.so libs/armeabi/
 ```
-### Step 2
+#### Windows
 编辑下面这个文件
 ```
     \source\ffmpeg\.externalToolBuilders\NDK_Builder.launch
