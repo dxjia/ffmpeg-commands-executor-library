@@ -123,7 +123,7 @@ void exit_program(int ret)
     if (program_exit)
         program_exit(ret);
 
-    exit(ret);
+    //exit(ret);
 }
 
 double parse_number_or_die(const char *context, const char *numstr, int type,
