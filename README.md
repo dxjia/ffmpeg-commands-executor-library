@@ -25,11 +25,15 @@ cp obj/local/armeabi/*.so libs/armeabi/
 #### Windows
 编辑下面这个文件
 ```
-    \source\ffmpeg\.externalToolBuilders\NDK_Builder.launch
+ .\source\ffmpeg\.externalToolBuilders\NDK_Builder.launch
 ```
 将其中的`NDK`路径改为自己的:
 ```
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="D:\android\android-ndk\ndk-build.cmd"/>
+```
+如果要编译`x86`版本，请将参数修改为`APP_ABI=x86`
+```
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="APP_ABI=arm"/>
 ```
 
 ### Step 3
