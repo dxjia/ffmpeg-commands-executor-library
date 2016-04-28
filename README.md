@@ -1,7 +1,7 @@
 `Sorry, guys` <br>
     下一步打算做成一个可以直接使用的库，不再是单纯的示例，所以改了仓库名。
 <br><br>
-# ffmpeg-jni-sample
+# ffmpeg-commands-excutor-library
 使用jni调用ffmpeg，首先将so库编入apk，jni的实现上使用直接传递ffmpeg command的方式，这样只需要安排合适的ffmpeg命令即可完成工作，不用再去研究ffmpeg的函数调用。
 
 # 介绍
