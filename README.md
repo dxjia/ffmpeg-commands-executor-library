@@ -4,7 +4,7 @@
 # 介绍
 项目使用`eclipse`创建。<br>
 jni/prebuilt以及jni/include下的so和.h文件都是从我的另外一个项目[ffmpeg-for-android-shared-library](https://github.com/dxjia/ffmpeg-for-android-shared-library)得来的。<br>
-###Step 1
+### Step 1
 使用ndk将jni进行编译。<br>
 本项目中增加了x86的ffmpeg库，但ndk-build要分别来进行。<br>
 如果只想支持arm平台的设备，只需执行：<br>
@@ -21,14 +21,24 @@ ndk-build APP_ABI=x86
 ```
 cp obj/local/armeabi/*.so libs/armeabi/
 ```
-###Step 2
-eclipse import project
+### Step 2
+编辑下面这个文件
+```
+    \source\ffmpeg\.externalToolBuilders\NDK_Builder.launch
+```
+将其中的`NDK`路径改为自己的:
+```
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="D:\android\android-ndk\ndk-build.cmd"/>
+```
 
-###Step 3
+### Step 3
+eclipse --> File --> Import --> Android --> Existing Android Code Into Workspace --> 选择`.\source\ffmpeg`目录
+
+### Step 4
 build project
 
-#代码示例
-##Java示例
+# 代码示例
+## Java示例
 
 ```java
 public class FFmpegNativeHelper {
@@ -63,14 +73,14 @@ public class FFmpegNativeHelper {
 	public native int ffmpeg_entry(int argc, String[] args);
 }
 ```
-##使用
+## 使用
 传入有效路径，如：/sdcard/abc.mp4<br>
 ```java
 // 将/sdcard/abc.mp4从开始的30帧转换为gif图片
 String testCommand = "ffmpeg -i /sdcard/abc.mp4 -vframes 30 -y -f gif /sdcard/outabc.gif";
 new FFmpegNativeHelper().ffmpegRunCommand(testCommand);
 ```
-#TODO
+# TODO
 <font size="4">x86设备上还待验证</font>
 
 # License
