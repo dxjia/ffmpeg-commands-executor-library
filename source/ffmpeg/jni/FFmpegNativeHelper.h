@@ -30,7 +30,7 @@ JNIEXPORT jint JNICALL Java_com_wind_ffmpeghelper_FFmpegNativeHelper_ffmpeg_1uni
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_com_wind_ffmpeghelper_FFmpegNativeHelper_ffmpeg_1entry
-  (JNIEnv *, jobject, jint, jobjectArray strArray);
+  (JNIEnv *, jobject, jobjectArray strArray);
 
 #ifdef __cplusplus
 }

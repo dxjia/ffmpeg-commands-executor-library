@@ -4145,23 +4145,30 @@ int run_ffempeg_command(int argc, char **argv)
  */
 // native function, java layer call this to run a ffmpeg command
 JNIEXPORT jint Java_com_wind_ffmpeghelper_FFmpegNativeHelper_ffmpeg_1entry(
-        JNIEnv* env, jobject thiz, jint argCount, jobjectArray strArray)
+        JNIEnv* env, jobject thiz, jobjectArray strArray)
 {
     int ret, i;
-    int argc = argCount;
-    jstring jstr;
 
-    char **argv = (char **) calloc(argc, sizeof(char *));
+    int argc = (*env)->GetArrayLength(env, strArray);
+
+    char ** argv = (char **)malloc(sizeof(char*)*argc);
 
     for (i = 0; i < argc; i++) {
-        jstr = (*env)->GetObjectArrayElement(env, strArray, i);
-        argv[i] = (char *) (*env)->GetStringUTFChars(env, jstr, 0);
+        argv[i] = (*env)->GetStringUTFChars(env,
+                              (jstring)(*env)->GetObjectArrayElement(env, 
+strArray, i), NULL);
     }
 
     // reset log callback for every commond
     av_log_set_callback(log_callback);
 
     ret = run_ffempeg_command(argc, argv);
+
+    for (i=0; i<argc; i++) {
+        (*env)->ReleaseStringUTFChars(env,
+                    (jstring)(*env)->GetObjectArrayElement(env, strArray, i), 
+argv[i]);
+    }
 
     free(argv);
 

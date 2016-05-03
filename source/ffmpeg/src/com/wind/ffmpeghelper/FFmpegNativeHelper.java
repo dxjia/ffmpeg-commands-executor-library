@@ -27,11 +27,11 @@ public class FFmpegNativeHelper {
 			Log.d("ffmpeg-jni", args[i]);
 			
 		}
-		return ffmpeg_entry(args.length, args);
+		return ffmpeg_entry(args);
 	}
 
 	// argc maybe dont be needed
 	public native int ffmpeg_init();
 	public native int ffmpeg_uninit();
-	public native int ffmpeg_entry(int argc, String[] args);
+	public native int ffmpeg_entry(String[] args);
 }
