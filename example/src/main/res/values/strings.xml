@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ffmpeg executor</string>
+    <string name="input_hint">Input Command, e.g. ffmpeg -version </string>
+</resources>
