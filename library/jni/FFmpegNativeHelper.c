@@ -4141,6 +4141,11 @@ int run_ffempeg_command(int argc, char **argv)
 }
 
 static int have_inited = 0;
+
+static void exit_ffmpeg(int ret) {
+    // do nothing
+}
+
 static int init() {
     int ret = 0;
 
@@ -4148,6 +4153,8 @@ static int init() {
         loge("have inited, drop repeat action...");
         return 1;
     }
+
+    register_exit(exit_ffmpeg);
 
     av_log_set_flags(AV_LOG_SKIP_REPEATED);
 
@@ -4207,8 +4214,6 @@ JNIEXPORT jstring Java_cn_dxjia_ffmpeg_library_FFmpegNativeHelper_ffmpeg_1run(
     }
 
     free(argv);
-
-    logd("%s", get_record_result());
 
     char * result_record = get_record_result();
     if (result_record != NULL && strlen(result_record) > 0) {

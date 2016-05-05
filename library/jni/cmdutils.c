@@ -62,6 +62,7 @@
 #include "android_log.h"
 #include "show_func_wrapper.h"
 
+
 static int init_report(const char *env);
 
 struct SwsContext *sws_opts;
@@ -322,7 +323,7 @@ static int write_option(void *optctx, const OptionDef *po, const char *opt,
     } else if (po->flags & OPT_DOUBLE) {
         *(double *)dst = parse_number_or_die(opt, arg, OPT_DOUBLE, -INFINITY, INFINITY);
     } else if (po->u.func_arg) {
-        if (po->flags & OPT_EXIT) {
+        if (po->flags == OPT_EXIT) {
             reset_record();
         }
         int ret = po->u.func_arg(optctx, opt, arg);
@@ -492,7 +493,7 @@ void parse_loglevel(int argc, char **argv, const OptionDef *options)
     const char *env;
     if (!idx)
         idx = locate_option(argc, argv, options, "v");
-    if (idx && argv[idx + 1])
+    if (idx && (idx + 1) < argc && argv[idx + 1])
         opt_loglevel(NULL, "loglevel", argv[idx + 1]);
     idx = locate_option(argc, argv, options, "report");
     if ((env = getenv("FFREPORT")) || idx) {
@@ -777,7 +778,11 @@ do {                                                                           \
         if (po->name) {
             if (po->flags & OPT_EXIT) {
                 /* optional argument, e.g. -h */
-                //arg = argv[optindex++];
+                if (optindex < argc) {
+                    arg = argv[optindex++];
+                } else {
+                    arg = "";
+                }
             } else if (po->flags & HAS_ARG) {
                 GET_ARG(arg);
             } else {
@@ -1280,6 +1285,7 @@ static int show_formats_devices(void *optctx, const char *opt, const char *arg, 
                name,
             long_name ? long_name:" ");
     }
+
     return 0;
 }
 

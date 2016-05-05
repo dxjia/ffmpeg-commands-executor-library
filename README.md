@@ -6,7 +6,7 @@ execute ffmpeg commands as a shared library
 add dependency in your build.gradle
 ```
 dependencies {
-    compile 'cn.dxjia:ffmpegexecutor:0.1.5'
+    compile 'cn.dxjia:ffmpegexecutor:0.1.6'
 }
 ```
 import package

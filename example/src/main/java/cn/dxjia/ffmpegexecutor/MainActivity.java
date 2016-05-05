@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(command)) {
             command = testCommand;
         }
+        // call runCommand in a thread will be better
         String result = FFmpegNativeHelper.runCommand(command);
         updateResultBoard(result);
     }

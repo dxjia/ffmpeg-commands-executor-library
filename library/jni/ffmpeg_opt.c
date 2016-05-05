@@ -2762,7 +2762,7 @@ static int open_files(OptionGroupList *l, const char *inout,
 
 int ffmpeg_parse_options(int argc, char **argv)
 {
-    OptionParseContext octx;
+    static OptionParseContext octx;
     uint8_t error[128];
     int ret;
 
@@ -2778,6 +2778,7 @@ int ffmpeg_parse_options(int argc, char **argv)
 
     /* apply global options */
     ret = parse_optgroup(NULL, &octx.global_opts);
+
     if (ret < 0) {
         av_log(NULL, AV_LOG_FATAL, "Error parsing global options: ");
         goto fail;
@@ -2798,7 +2799,7 @@ int ffmpeg_parse_options(int argc, char **argv)
     }
 
 fail:
-    uninit_parse_context(&octx);
+    //uninit_parse_context(&octx);
     if (ret < 0) {
         av_strerror(ret, error, sizeof(error));
         av_log(NULL, AV_LOG_FATAL, "%s\n", error);
