@@ -1,11 +1,11 @@
-`as version` <br>
+`AS version` <br>
 # ffmpeg-commands-executor-library
 execute ffmpeg commands as a shared library
 # Usage
 add dependency in your build.gradle
 ```
 dependencies {
-    compile 'me.drakeet.materialdialog:library:1.3.1'
+    compile 'cn.dxjia:ffmpegexecutor:0.1.5'
 }
 ```
 import package
@@ -14,15 +14,15 @@ import cn.dxjia.ffmpeg.library.FFmpegNativeHelper;
 ```
 init ffmpeg in somewhere, like onCreate(), call once.
 ```
-    FFmpegNativeHelper.init();
+FFmpegNativeHelper.init();
 ```
 run command
 ```
-   FFmpegNativeHelper.runCommand("ffmpeg -version");
+FFmpegNativeHelper.runCommand("ffmpeg -version");
 ```
 call uninit when you dont need to use ffmpeg any more
 ```
-    FFmpegNativeHelper.uninit();
+FFmpegNativeHelper.uninit();
 ```
 
 **`NOTE:`**
