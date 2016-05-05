@@ -1,33 +1,33 @@
 `as version` <br>
-<br><br>
 # ffmpeg-commands-executor-library
 execute ffmpeg commands as a shared library
 # Usage
-### 1. add dependency in your gradle file
 ```
-compile 'cn.dxjia:ffmpegexecutor:0.1.4'
+compile 'cn.dxjia:ffmpegexecutor:0.1.5'
 ```
-### 2. import package
+import package
 ```
 import cn.dxjia.ffmpeg.library.FFmpegNativeHelper;
 ```
-
-### 3. init ffmpeg
 init ffmpeg in somewhere, like onCreate(), call once.
 ```
-    FFmpegNativeHelper.ffmpeg_init();
+    FFmpegNativeHelper.init();
 ```
-### 4. run command
+run command
 ```
    FFmpegNativeHelper.runCommand("ffmpeg -version");
 ```
-
-### 5. uninit
-call uninit when you dont need to use ffmpeg again
+call uninit when you dont need to use ffmpeg any more
 ```
-    FFmpegNativeHelper.ffmpeg_uninit();
-````
+    FFmpegNativeHelper.uninit();
+```
+
+**`NOTE:`**
+- now,  runCommand() will return some strings as result, not very friendly;
+- this library modified some ffmpeg source code, invasion is relatively strong.
+
 # Compile library by yourself
+If you want to compile this library by yourself, you can do that as follow steps.
 ### Step 1
  Build jni manually
 #### Linux or Ubuntu
@@ -50,6 +50,9 @@ Android Studio -> Open Existing Project
 ### Step 3
 modify code & build project
 
+**NOTE:** Every time you changed the jni source code, you need to build it manually before building the project from Android Studio.
+
+Any issues and PRs are welcome.
 
 # License
 ```

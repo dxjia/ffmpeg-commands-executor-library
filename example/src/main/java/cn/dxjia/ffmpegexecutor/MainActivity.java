@@ -14,7 +14,6 @@ public class MainActivity extends AppCompatActivity {
 
     EditText mInputEdit;
     TextView mResultBoard;
-    FFmpegNativeHelper mFFmpegNativeHelper;
 
     private static final String testCommand = "ffmpeg -i /sdcard/demo.mp4 -vframes 30 -y -f gif /sdcard/demoout.gif";
 
@@ -34,13 +33,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mFFmpegNativeHelper = new FFmpegNativeHelper();
-        mFFmpegNativeHelper.ffmpeg_init();
+        FFmpegNativeHelper.init();
     }
 
     protected void onDestroy() {
         super.onDestroy();
-        mFFmpegNativeHelper.ffmpeg_uninit();
+        FFmpegNativeHelper.uninit();
     }
 
     private void runCommand() {
@@ -49,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(command)) {
             command = testCommand;
         }
-        String result = mFFmpegNativeHelper.runCommand(command);
+        String result = FFmpegNativeHelper.runCommand(command);
         updateResultBoard(result);
     }
 

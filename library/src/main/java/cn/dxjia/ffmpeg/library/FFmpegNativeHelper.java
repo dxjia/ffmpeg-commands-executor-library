@@ -18,7 +18,7 @@ public class FFmpegNativeHelper {
 	}
 
 	// success 0, error 1
-	public String runCommand(String command) {
+	public static String runCommand(String command) {
 		if(command == null || command.length() == 0) {
             return "Command can`t be empty.";
         }
@@ -34,7 +34,15 @@ public class FFmpegNativeHelper {
 		}
 	}
 
-	public native int ffmpeg_init();
-	public native int ffmpeg_uninit();
-	public native String ffmpeg_run(String[] args);
+    public static int init() {
+        return ffmpeg_init();
+    }
+
+    public static int uninit() {
+        return ffmpeg_uninit();
+    }
+
+	private static native int ffmpeg_init();
+	private static native int ffmpeg_uninit();
+	private static native String ffmpeg_run(String[] args);
 }
