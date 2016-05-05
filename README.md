@@ -2,8 +2,11 @@
 # ffmpeg-commands-executor-library
 execute ffmpeg commands as a shared library
 # Usage
+add dependency in your build.gradle
 ```
-compile 'cn.dxjia:ffmpegexecutor:0.1.5'
+dependencies {
+    compile 'me.drakeet.materialdialog:library:1.3.1'
+}
 ```
 import package
 ```
