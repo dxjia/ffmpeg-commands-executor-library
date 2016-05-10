@@ -27,4 +27,4 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-apply from: 'https://raw.githubusercontent.com/msdx/gradle-publish/master/bintray.gradle'
+apply from: 'bintray.gradle'
