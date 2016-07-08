@@ -4140,7 +4140,17 @@ int run_ffempeg_command(int argc, char **argv)
     return 0;
 }
 
-static int have_inited = 0;
+static int s_task_completed = 0;
+
+static void sigchld_handler(int signo)
+{
+    logd("sigchld_handler, s_task_completed = %d", s_task_completed);
+    if (s_task_completed != 1)
+    {
+        // some exception occurred
+    }
+
+}
 
 static void exit_ffmpeg(int ret) {
     // do nothing
@@ -4148,11 +4158,6 @@ static void exit_ffmpeg(int ret) {
 
 static int init() {
     int ret = 0;
-
-    if (have_inited == 1) {
-        loge("have inited, drop repeat action...");
-        return 1;
-    }
 
     register_exit(exit_ffmpeg);
 
@@ -4173,7 +4178,8 @@ static int init() {
     av_register_all();
     avformat_network_init();
 
-    have_inited = 1;
+    s_task_completed = 0;
+    signal(SIGCHLD, sigchld_handler);
 
     return ret;
 }
@@ -4187,27 +4193,64 @@ static int init() {
 JNIEXPORT jstring Java_cn_dxjia_ffmpeg_library_FFmpegNativeHelper_ffmpeg_1run(
         JNIEnv* env, jobject thiz, jobjectArray strArray)
 {
-    int ret, i;
+    int ret, i, pid;
+    int pipeFD[2];
+    char retBuffer[2];
+    char resultString[4096];
 
     int argc = (*env)->GetArrayLength(env, strArray);
 
     char ** argv = (char **)malloc(sizeof(char*)*argc);
-
-    if (have_inited == 0) {
-        logd("have not yet inited...");
-        init();
-    }
 
     for (i = 0; i < argc; i++) {
         argv[i] = (*env)->GetStringUTFChars(env,
                               (jstring)(*env)->GetObjectArrayElement(env, strArray, i), NULL);
     }
 
-    // reset log callback for every commond
-    av_log_set_callback(log_callback);
+    // reset to FAIL
+    ret = 1;
+    memset(retBuffer, 0, sizeof(retBuffer));
+    memset(resultString, 0, sizeof(resultString));
 
-    ret = run_ffempeg_command(argc, argv);
+    pipe(pipeFD);
 
+    pid = fork();
+
+    if (pid < 0) {
+        goto done;
+    } else if (pid == 0) {
+        // in child process, do command work
+
+        close(pipeFD[0]);
+
+        init();
+
+        av_log_set_callback(log_callback);
+
+        ret = run_ffempeg_command(argc, argv);
+
+        s_task_completed = 1;
+
+        sprintf(retBuffer, "%d", ret);
+        write(pipeFD[1], retBuffer, sizeof(retBuffer));
+
+        char * result_record = get_record_result();
+        sprintf(resultString, "%s", result_record);
+
+        write(pipeFD[1], resultString, sizeof(resultString));
+
+        exit(0);
+    } else {
+        close(pipeFD[1]);
+
+        read(pipeFD[0], retBuffer, sizeof(retBuffer));
+
+        ret = (retBuffer[0] == '1') ? 1 : 0;
+        memset(resultString, 0, sizeof(resultString));
+        read(pipeFD[0], resultString, sizeof(resultString));
+    }
+
+done:
     for (i=0; i<argc; i++) {
         (*env)->ReleaseStringUTFChars(env,
                     (jstring)(*env)->GetObjectArrayElement(env, strArray, i), argv[i]);
@@ -4215,14 +4258,25 @@ JNIEXPORT jstring Java_cn_dxjia_ffmpeg_library_FFmpegNativeHelper_ffmpeg_1run(
 
     free(argv);
 
-    char * result_record = get_record_result();
-    if (result_record != NULL && strlen(result_record) > 0) {
-        return (*env)->NewStringUTF(env, result_record);
+    //close();
+
+    if (strlen(resultString) > 0) {
+        // workaround for UTF-8 issue
+        jbyteArray array = (*env)->NewByteArray(env, sizeof(resultString));
+        (*env)->SetByteArrayRegion(env, array, 0, sizeof(resultString), resultString);
+        jstring strEncode = (*env)->NewStringUTF(env, "UTF-8");
+        jclass cls = (*env)->FindClass(env, "java/lang/String");
+        jmethodID ctor = (*env)->GetMethodID(env, cls, "<init>", "([BLjava/lang/String;)V");
+
+        jstring object = (jstring) (*env)->NewObject(env, cls, ctor, array, strEncode);
+
+        return object;
+        //return (*env)->NewStringUTF(env, resultString);
     } else {
-        if (ret) {
-            return (*env)->NewStringUTF(env, "FAIL");
-        } else {
+        if (ret == 0 && s_task_completed == 1) {
             return (*env)->NewStringUTF(env, "SUCCESS");
+        } else {
+            return (*env)->NewStringUTF(env, "FAIL");
         }
     }
 }
@@ -4235,8 +4289,9 @@ JNIEXPORT jstring Java_cn_dxjia_ffmpeg_library_FFmpegNativeHelper_ffmpeg_1run(
 JNIEXPORT jint JNICALL Java_cn_dxjia_ffmpeg_library_FFmpegNativeHelper_ffmpeg_1uninit
   (JNIEnv * env, jobject thiz)
 {
-    ffmpeg_cleanup(0);
-    have_inited = 0;
+    // Deprecated
+    //ffmpeg_cleanup(0);
+    return 0;
 }
 
 /*
@@ -4247,7 +4302,9 @@ JNIEXPORT jint JNICALL Java_cn_dxjia_ffmpeg_library_FFmpegNativeHelper_ffmpeg_1u
 JNIEXPORT jint JNICALL Java_cn_dxjia_ffmpeg_library_FFmpegNativeHelper_ffmpeg_1init
   (JNIEnv * env, jobject thiz)
 {
-    return init();
+    // Deprecated
+    //return init();
+    return 0;
 }
 
 

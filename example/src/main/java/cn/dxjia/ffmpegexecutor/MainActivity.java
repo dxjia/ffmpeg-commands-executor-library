@@ -15,7 +15,8 @@ public class MainActivity extends AppCompatActivity {
     EditText mInputEdit;
     TextView mResultBoard;
 
-    private static final String testCommand = "ffmpeg -i /sdcard/demo.mp4 -vframes 30 -y -f gif /sdcard/demoout.gif";
+    //private static final String testCommand = "ffmpeg -i /sdcard/demo.mp4 -vframes 30 -y -f gif /sdcard/demoout.gif";
+    private static final String testCommand = "ffmpeg -h";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +33,6 @@ public class MainActivity extends AppCompatActivity {
                 runCommand();
             }
         });
-
-        FFmpegNativeHelper.init();
-    }
-
-    protected void onDestroy() {
-        super.onDestroy();
-        FFmpegNativeHelper.uninit();
     }
 
     private void runCommand() {

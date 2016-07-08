@@ -34,12 +34,16 @@ public class FFmpegNativeHelper {
 		}
 	}
 
+	// Deprecated, no use anymore
     public static int init() {
-        return ffmpeg_init();
+        //return ffmpeg_init();
+		return 0;
     }
 
+	// Deprecated, no use anymore
     public static int uninit() {
-        return ffmpeg_uninit();
+        //return ffmpeg_uninit();
+		return 0;
     }
 
 	private static native int ffmpeg_init();
