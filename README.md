@@ -1,7 +1,7 @@
 `This is AS version` <br>
 Eclipse version, please refer to [Old Eclipse Version](https://github.com/dxjia/ffmpeg-commands-executor-library/tree/master)
 # ffmpeg-commands-executor-library
-execute ffmpeg commands as a shared library
+execute ffmpeg commands as a shared librar, you can try [example.apk](https://github.com/dxjia/ffmpeg-commands-executor-library/releases/download/v0.1.7/example.apk)
 # Usage
 add dependency in your build.gradle
 ```
@@ -22,7 +22,7 @@ FFmpegNativeHelper.runCommand("ffmpeg -version");
 - now,  runCommand() will return some strings as result, not very friendly;
 - this library modified some ffmpeg source code, invasion is relatively strong.
 
-# Compile library by yourself
+# Compile library or example by yourself
 If you want to compile this library by yourself, you can do that as follow steps.
 ### Step 1
  Build jni manually
