@@ -6,24 +6,16 @@ execute ffmpeg commands as a shared library
 add dependency in your build.gradle
 ```
 dependencies {
-    compile 'cn.dxjia:ffmpegexecutor:0.1.6'
+    compile 'cn.dxjia:ffmpegexecutor:0.1.7'
 }
 ```
 import package
 ```
 import cn.dxjia.ffmpeg.library.FFmpegNativeHelper;
 ```
-init ffmpeg in somewhere, like onCreate(), call once.
-```
-FFmpegNativeHelper.init();
-```
 run command
 ```
 FFmpegNativeHelper.runCommand("ffmpeg -version");
-```
-call uninit when you dont need to use ffmpeg any more
-```
-FFmpegNativeHelper.uninit();
 ```
 
 **`NOTE:`**
@@ -41,7 +33,7 @@ chmod a+x build.sh
 . build.sh
 ```
 #### Windows
-Make sure you have add you NDK path to your PC Enviroment.
+Make sure you have add your NDK path to your PC Enviroment.
 <br>
 Open a CMD terminal
 ```
