@@ -27,4 +27,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-apply from: 'bintray.gradle'
+// uncomment the follow line to do bintray upload
+//apply from: 'bintray.gradle'
