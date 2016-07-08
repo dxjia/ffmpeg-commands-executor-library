@@ -1,3 +1,10 @@
 /build
 /obj
 /libs
+libavcodec-56.so
+libavdevice-56.so
+libavfilter-5.so
+libavformat-56.so
+libavutil-54.so
+libswresample-1.so
+libswscale-3.so
