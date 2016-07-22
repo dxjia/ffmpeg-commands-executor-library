@@ -17,17 +17,37 @@
         android:hint="@string/input_hint"
         android:layout_alignParentTop="true"
         android:inputType="text"/>
-    <Button
-        android:id="@+id/run_command"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/button_area"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_below="@id/command_input_edit"
-        android:text="Run Command"
-        android:layout_centerHorizontal="true"/>
+        android:padding="5dp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/run_command_sync"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/command_input_edit"
+            android:text="Run Sync"
+            android:layout_centerHorizontal="true"/>
+
+        <Button
+            android:id="@+id/run_command_async"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/command_input_edit"
+            android:text="Run Async"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="20dp"/>
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/result_board"
-        android:layout_below="@id/run_command"
+        android:layout_below="@id/button_area"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Result will be showed here!"
