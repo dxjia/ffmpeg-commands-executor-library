@@ -1,7 +1,9 @@
 `This is AS version` <br>
 Eclipse version, please refer to [Old Eclipse Version](https://github.com/dxjia/ffmpeg-commands-executor-library/tree/master)
 # ffmpeg-commands-executor-library
-execute ffmpeg commands as a shared librar, you can try [example.apk](https://github.com/dxjia/ffmpeg-commands-executor-library/releases/download/v0.1.7/example.apk)
+execute ffmpeg commands as a shared librar, you can try [example.apk](https://github.com/dxjia/ffmpeg-commands-executor-library/releases/download/v0.1.7/example-debug.apk)
+[**Note**]: This library may not support all the codecs you want, for example, h264.
+
 # Usage
 add dependency in your build.gradle
 ```
